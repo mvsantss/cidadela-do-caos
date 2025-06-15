@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Cidadela do Caos - Ficha Digital</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header com navegação -->
+        <header class="app-header">
+            <h1>🏰 A Cidadela do Caos</h1>
+            <nav class="tab-navigation">
+                <button class="tab-btn active" data-tab="ficha">📋 Ficha</button>
+                <button class="tab-btn" data-tab="salas">🗺️ Salas</button>
+                <button class="tab-btn" data-tab="encantos">✨ Encantos</button>
+                <button class="tab-btn" data-tab="combate">⚔️ Combate</button>
+                <button class="tab-btn" data-tab="runs">💾 Runs</button>
+            </nav>
+        </header>
+
+        <!-- Conteúdo principal -->
+        <main class="app-main">
+            <!-- Aba Ficha -->
+            <div id="ficha-tab" class="tab-content active">
+                <div class="ficha-container">
+                    <div class="ficha-section">
+                        <h2>Atributos do Personagem</h2>
+                        <div class="atributos-grid">
+                            <div class="atributo-card">
+                                <h3>Habilidade</h3>
+                                <div class="atributo-values">
+                                    <label>Inicial: <input type="number" id="habilidade-inicial" min="1" max="20" value="12"></label>
+                                    <label>Atual: <input type="number" id="habilidade-atual" min="0" max="20" value="12"></label>
+                                </div>
+                            </div>
+                            <div class="atributo-card">
+                                <h3>Energia</h3>
+                                <div class="atributo-values">
+                                    <label>Inicial: <input type="number" id="energia-inicial" min="1" max="30" value="20"></label>
+                                    <label>Atual: <input type="number" id="energia-atual" min="0" max="30" value="20"></label>
+                                </div>
+                            </div>
+                            <div class="atributo-card">
+                                <h3>Sorte</h3>
+                                <div class="atributo-values">
+                                    <label>Inicial: <input type="number" id="sorte-inicial" min="1" max="20" value="10"></label>
+                                    <label>Atual: <input type="number" id="sorte-atual" min="0" max="20" value="10"></label>
+                                </div>
+                            </div>
+                            <div class="atributo-card">
+                                <h3>Magia</h3>
+                                <div class="atributo-values">
+                                    <label>Inicial: <input type="number" id="magia-inicial" min="1" max="20" value="8"></label>
+                                    <label>Atual: <input type="number" id="magia-atual" min="0" max="20" value="8"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ficha-actions">
+                            <button id="gerar-atributos" class="btn-primary">🎲 Gerar Aleatoriamente</button>
+                            <button id="resetar-atributos" class="btn-secondary">🔄 Resetar para Inicial</button>
+                        </div>
+                    </div>
+
+                    <div class="ficha-section">
+                        <h2>Inventário</h2>
+                        <div class="inventario-grid">
+                            <div class="inventario-card">
+                                <h3>💰 Ouro</h3>
+                                <input type="number" id="ouro" min="0" value="0" class="ouro-input">
+                            </div>
+                            <div class="inventario-card">
+                                <h3>🎒 Itens Levados</h3>
+                                <textarea id="itens-levados" placeholder="Liste seus itens aqui..."></textarea>
+                            </div>
+                            <div class="inventario-card">
+                                <h3>✨ Encantos Selecionados</h3>
+                                <div id="encantos-selecionados" class="encantos-lista">
+                                    <p class="empty-state">Nenhum encanto selecionado</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ficha-section">
+                        <h2>📝 Anotações</h2>
+                        <textarea id="anotacoes-gerais" placeholder="Suas anotações da aventura..." class="anotacoes-textarea"></textarea>
+                    </div>
+
+                    <div class="ficha-section">
+                        <h2>🗺️ Localização Atual</h2>
+                        <div class="localizacao-info">
+                            <label>Sala Atual: <input type="number" id="sala-atual" min="1" max="400" value="1"></label>
+                            <div id="proximas-salas" class="proximas-salas">
+                                <p>Próximas salas aparecerão aqui</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Salas -->
+            <div id="salas-tab" class="tab-content">
+                <div class="salas-container">
+                    <div class="salas-header">
+                        <h2>🗺️ Gerenciamento de Salas (1-400)</h2>
+                        <div class="salas-controls">
+                            <input type="number" id="buscar-sala" placeholder="Ir para sala..." min="1" max="400">
+                            <button id="ir-sala" class="btn-primary">Ir</button>
+                            <button id="mostrar-todas" class="btn-secondary">Mostrar Todas</button>
+                            <button id="mostrar-visitadas" class="btn-secondary">Visitadas</button>
+                        </div>
+                    </div>
+                    <div class="salas-grid" id="salas-grid">
+                        <!-- Salas serão geradas dinamicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Encantos -->
+            <div id="encantos-tab" class="tab-content">
+                <div class="encantos-container">
+                    <div class="encantos-header">
+                        <h2>✨ Sistema de Encantos Mágicos</h2>
+                        <div class="encantos-controls">
+                            <button id="gerar-encantos-aleatorio" class="btn-primary">🎲 Gerar Aleatoriamente</button>
+                            <button id="limpar-encantos" class="btn-secondary">🗑️ Limpar Seleção</button>
+                            <span class="magia-info">Magia disponível: <span id="magia-disponivel">8</span></span>
+                        </div>
+                    </div>
+                    <div class="encantos-grid" id="encantos-grid">
+                        <!-- Encantos serão gerados dinamicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Combate -->
+            <div id="combate-tab" class="tab-content">
+                <div class="combate-container">
+                    <div class="combate-header">
+                        <h2>⚔️ Sistema de Combate</h2>
+                    </div>
+                    <div class="combate-setup">
+                        <h3>Configuração do Combate</h3>
+                        <div class="inimigos-container" id="inimigos-container">
+                            <div class="inimigo-card">
+                                <h4>Inimigo 1</h4>
+                                <label>Nome: <input type="text" class="inimigo-nome" placeholder="Nome do inimigo"></label>
+                                <label>Habilidade: <input type="number" class="inimigo-habilidade" min="1" max="20" value="8"></label>
+                                <label>Energia: <input type="number" class="inimigo-energia" min="1" max="30" value="6"></label>
+                                <label>Modificador: <input type="number" class="inimigo-modificador" value="0"></label>
+                            </div>
+                        </div>
+                        <div class="combate-controls">
+                            <button id="adicionar-inimigo" class="btn-secondary">➕ Adicionar Inimigo</button>
+                            <button id="remover-inimigo" class="btn-secondary">➖ Remover Inimigo</button>
+                        </div>
+                        <div class="combate-opcoes">
+                            <label><input type="checkbox" id="permitir-sorte"> Permitir uso de Sorte</label>
+                        </div>
+                        <button id="iniciar-combate" class="btn-primary">⚔️ Iniciar Combate</button>
+                    </div>
+                    <div class="combate-arena" id="combate-arena" style="display: none;">
+                        <h3>Arena de Combate</h3>
+                        <div id="combate-log" class="combate-log"></div>
+                        <div class="combate-actions">
+                            <button id="proximo-round" class="btn-primary">🎲 Próximo Round</button>
+                            <button id="usar-sorte" class="btn-secondary" style="display: none;">🍀 Usar Sorte</button>
+                            <button id="reiniciar-combate" class="btn-secondary">🔄 Reiniciar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Runs -->
+            <div id="runs-tab" class="tab-content">
+                <div class="runs-container">
+                    <div class="runs-header">
+                        <h2>💾 Gerenciamento de Runs</h2>
+                        <div class="runs-controls">
+                            <button id="nova-run" class="btn-primary">🆕 Nova Run</button>
+                            <button id="salvar-run" class="btn-primary">💾 Salvar Run Atual</button>
+                            <button id="exportar-runs" class="btn-secondary">📤 Exportar</button>
+                            <button id="importar-runs" class="btn-secondary">📥 Importar</button>
+                        </div>
+                    </div>
+                    <div class="runs-lista" id="runs-lista">
+                        <!-- Runs serão listadas dinamicamente -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
+
