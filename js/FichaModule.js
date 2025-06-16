@@ -108,6 +108,9 @@ export class FichaModule {
                 const element = this.elements[`${attr}${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`];
                 if (element) {
                     element.value = this.atributos[attr][tipo];
+                    
+                    // Adicionar indicadores visuais
+                    this.updateAtributoIndicator(element, attr, tipo);
                 }
             });
         });
@@ -119,6 +122,82 @@ export class FichaModule {
         if (this.elements.salaAtual) this.elements.salaAtual.value = this.salaAtual;
 
         this.updateEncantosList();
+        this.updateAtributosStats();
+    }
+
+    updateAtributoIndicator(element, atributo, tipo) {
+        // Remover classes anteriores
+        element.classList.remove('attr-low', 'attr-normal', 'attr-high', 'attr-critical');
+        
+        const valor = this.atributos[atributo][tipo];
+        const inicial = this.atributos[atributo].inicial;
+        
+        if (tipo === 'atual') {
+            const percentual = (valor / inicial) * 100;
+            
+            if (percentual <= 25) {
+                element.classList.add('attr-critical');
+            } else if (percentual <= 50) {
+                element.classList.add('attr-low');
+            } else if (percentual <= 75) {
+                element.classList.add('attr-normal');
+            } else {
+                element.classList.add('attr-high');
+            }
+        }
+    }
+
+    updateAtributosStats() {
+        // Criar ou atualizar painel de estatísticas dos atributos
+        let statsContainer = document.getElementById('atributos-stats');
+        if (!statsContainer) {
+            statsContainer = document.createElement('div');
+            statsContainer.id = 'atributos-stats';
+            statsContainer.className = 'atributos-stats';
+            
+            const atributosContainer = document.querySelector('.atributos-container');
+            if (atributosContainer) {
+                atributosContainer.appendChild(statsContainer);
+            }
+        }
+
+        const totalInicial = Object.values(this.atributos).reduce((sum, attr) => sum + attr.inicial, 0);
+        const totalAtual = Object.values(this.atributos).reduce((sum, attr) => sum + attr.atual, 0);
+        const percentualSaude = Math.round((totalAtual / totalInicial) * 100);
+
+        statsContainer.innerHTML = `
+            <div class="stats-header">
+                <h4>📊 Status do Personagem</h4>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Total Inicial</span>
+                    <span class="stat-value">${totalInicial}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Atual</span>
+                    <span class="stat-value">${totalAtual}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Condição</span>
+                    <span class="stat-value ${this.getCondicaoClass(percentualSaude)}">${percentualSaude}%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Magia Disponível</span>
+                    <span class="stat-value">${this.atributos.magia.atual}/${this.atributos.magia.inicial}</span>
+                </div>
+            </div>
+            <div class="health-bar">
+                <div class="health-fill ${this.getCondicaoClass(percentualSaude)}" style="width: ${percentualSaude}%"></div>
+            </div>
+        `;
+    }
+
+    getCondicaoClass(percentual) {
+        if (percentual <= 25) return 'critical';
+        if (percentual <= 50) return 'low';
+        if (percentual <= 75) return 'normal';
+        return 'high';
     }
 
     updateAtributo(atributo, tipo, valor) {
@@ -264,6 +343,86 @@ export class FichaModule {
             this.updateUI();
         }
     }
+
+    // Métodos para modificadores de atributos
+    aplicarModificador(atributo, valor) {
+        if (this.atributos[atributo]) {
+            const valorAnterior = this.atributos[atributo].atual;
+            this.atributos[atributo].atual = Math.max(0, this.atributos[atributo].atual + valor);
+            const valorNovo = this.atributos[atributo].atual;
+            
+            this.updateUI();
+            this.saveData();
+            
+            const sinal = valor > 0 ? '+' : '';
+            const nomeAtributo = atributo.charAt(0).toUpperCase() + atributo.slice(1);
+            window.CidadelaApp.showNotification(
+                `${nomeAtributo}: ${valorAnterior} → ${valorNovo} (${sinal}${valor})`,
+                valor > 0 ? 'success' : 'warning'
+            );
+        }
+    }
+
+    aplicarModificadorCustom(atributo, valor) {
+        const modificador = parseInt(valor);
+        if (!isNaN(modificador) && modificador !== 0) {
+            this.aplicarModificador(atributo, modificador);
+        }
+    }
+
+    aplicarPreset(preset) {
+        const presets = {
+            'combate-perdido': {
+                energia: -2
+            },
+            'usar-sorte': {
+                sorte: -1
+            },
+            'pocao-cura': {
+                energia: 4
+            },
+            'armadilha': {
+                habilidade: -1,
+                energia: -2
+            },
+            'benção': {
+                habilidade: 1,
+                energia: 1,
+                sorte: 1,
+                magia: 1
+            },
+            'maldição': {
+                habilidade: -1,
+                energia: -1,
+                sorte: -1,
+                magia: -1
+            }
+        };
+
+        if (presets[preset]) {
+            const modificadores = presets[preset];
+            let mensagem = '';
+            
+            Object.keys(modificadores).forEach(atributo => {
+                const valor = modificadores[atributo];
+                if (this.atributos[atributo]) {
+                    this.atributos[atributo].atual = Math.max(0, this.atributos[atributo].atual + valor);
+                    const sinal = valor > 0 ? '+' : '';
+                    const nomeAtributo = atributo.charAt(0).toUpperCase() + atributo.slice(1);
+                    mensagem += `${nomeAtributo} ${sinal}${valor}, `;
+                }
+            });
+            
+            this.updateUI();
+            this.saveData();
+            
+            // Remover última vírgula e espaço
+            mensagem = mensagem.slice(0, -2);
+            window.CidadelaApp.showNotification(`Preset aplicado: ${mensagem}`, 'info');
+        }
+    }
+}
+
 
     // Métodos públicos para outros módulos
     getAtributo(nome, tipo = 'atual') {

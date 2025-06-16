@@ -123,25 +123,38 @@ export class EncantosModule {
         const card = document.createElement('div');
         card.className = 'encanto-card';
         
-        // Verificar status do encanto
-        const selecionado = this.encantosSelecionados.some(e => e.id === encanto.id);
+        // Contar quantas vezes este encanto foi selecionado
+        const vezesSelecionado = this.encantosSelecionados.filter(e => e.id === encanto.id).length;
         const usado = this.encantosUsados.includes(encanto.id);
         
-        if (selecionado) card.classList.add('selecionado');
+        if (vezesSelecionado > 0) card.classList.add('selecionado');
         if (usado) card.classList.add('usado');
 
-        // Determinar ícone de status
+        // Determinar ícone de status e contador
         let statusIcon = '';
+        let contador = '';
+        
         if (usado) {
             statusIcon = '🚫';
-        } else if (selecionado) {
+        } else if (vezesSelecionado > 0) {
             statusIcon = '✅';
+            contador = vezesSelecionado > 1 ? `<span class="encanto-contador">${vezesSelecionado}x</span>` : '';
         }
 
         card.innerHTML = `
-            <div class="encanto-status">${statusIcon}</div>
+            <div class="encanto-header">
+                <div class="encanto-status">${statusIcon}</div>
+                ${contador}
+            </div>
             <div class="encanto-nome">${encanto.nome}</div>
             <div class="encanto-descricao">${encanto.descricao}</div>
+            ${vezesSelecionado > 0 ? `
+                <div class="encanto-actions">
+                    <button class="btn-mini btn-remove" onclick="event.stopPropagation(); window.cidadelaApp.modules.encantos.removerUmaInstancia(${encanto.id})" title="Remover uma seleção">
+                        ➖ Remover
+                    </button>
+                </div>
+            ` : ''}
         `;
 
         // Event listeners
@@ -151,7 +164,6 @@ export class EncantosModule {
     }
 
     toggleEncanto(encanto) {
-        const jaSelecionado = this.encantosSelecionados.some(e => e.id === encanto.id);
         const jaUsado = this.encantosUsados.includes(encanto.id);
 
         if (jaUsado) {
@@ -159,25 +171,25 @@ export class EncantosModule {
             return;
         }
 
-        if (jaSelecionado) {
-            // Remover encanto
-            this.encantosSelecionados = this.encantosSelecionados.filter(e => e.id !== encanto.id);
-            window.CidadelaApp.showNotification(`Encanto "${encanto.nome}" removido`, 'info');
-        } else {
-            // Verificar se pode adicionar (baseado na Magia disponível)
-            const magiaAtual = this.getMagiaAtual();
-            if (this.encantosSelecionados.length >= magiaAtual) {
-                window.CidadelaApp.showNotification(
-                    `Você só pode selecionar ${magiaAtual} encantos (baseado na sua Magia)`,
-                    'warning'
-                );
-                return;
-            }
-
-            // Adicionar encanto
-            this.encantosSelecionados.push(encanto);
-            window.CidadelaApp.showNotification(`Encanto "${encanto.nome}" selecionado`, 'success');
+        // Contar quantas vezes este encanto já foi selecionado
+        const vezesJaSelecionado = this.encantosSelecionados.filter(e => e.id === encanto.id).length;
+        
+        // Verificar se pode adicionar mais (baseado na Magia disponível)
+        const magiaAtual = this.getMagiaAtual();
+        if (this.encantosSelecionados.length >= magiaAtual) {
+            window.CidadelaApp.showNotification(
+                `Você só pode selecionar ${magiaAtual} encantos (baseado na sua Magia)`,
+                'warning'
+            );
+            return;
         }
+
+        // Adicionar encanto (permitindo múltiplas seleções do mesmo)
+        this.encantosSelecionados.push({...encanto, instanceId: Date.now() + Math.random()});
+        window.CidadelaApp.showNotification(
+            `Encanto "${encanto.nome}" selecionado (${vezesJaSelecionado + 1}x)`, 
+            'success'
+        );
 
         this.renderEncantos();
         this.saveData();
@@ -192,13 +204,11 @@ export class EncantosModule {
         // Rolar 2d6 para determinar quantidade de encantos
         const quantidadeEncantos = window.CidadelaApp.rollDice(6, 2);
         
-        // Selecionar encantos aleatoriamente
-        const encantosDisponiveis = [...this.encantosDisponiveis];
-        
-        for (let i = 0; i < quantidadeEncantos && encantosDisponiveis.length > 0; i++) {
-            const indiceAleatorio = Math.floor(Math.random() * encantosDisponiveis.length);
-            const encantoSelecionado = encantosDisponiveis.splice(indiceAleatorio, 1)[0];
-            this.encantosSelecionados.push(encantoSelecionado);
+        // Selecionar encantos aleatoriamente (permitindo repetições)
+        for (let i = 0; i < quantidadeEncantos; i++) {
+            const indiceAleatorio = Math.floor(Math.random() * this.encantosDisponiveis.length);
+            const encantoSelecionado = this.encantosDisponiveis[indiceAleatorio];
+            this.encantosSelecionados.push({...encantoSelecionado, instanceId: Date.now() + Math.random() + i});
         }
 
         this.renderEncantos();
@@ -209,6 +219,26 @@ export class EncantosModule {
             `🎲 ${quantidadeEncantos} encantos gerados aleatoriamente!`,
             'success'
         );
+    }
+
+    removerUmaInstancia(encantoId) {
+        // Encontrar e remover apenas uma instância do encanto
+        const indice = this.encantosSelecionados.findIndex(e => e.id === encantoId);
+        if (indice !== -1) {
+            const encanto = this.encantosSelecionados[indice];
+            this.encantosSelecionados.splice(indice, 1);
+            
+            const restantes = this.encantosSelecionados.filter(e => e.id === encantoId).length;
+            const mensagem = restantes > 0 ? 
+                `Encanto "${encanto.nome}" removido (${restantes} restantes)` :
+                `Encanto "${encanto.nome}" removido`;
+                
+            window.CidadelaApp.showNotification(mensagem, 'info');
+            
+            this.renderEncantos();
+            this.saveData();
+            this.updateFichaEncantos();
+        }
     }
 
     limparSelecao() {

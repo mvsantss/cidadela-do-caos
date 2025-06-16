@@ -187,6 +187,119 @@ body {
     border-radius: 4px;
     text-align: center;
     font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+/* Indicadores visuais dos atributos */
+.atributo-values input.attr-critical {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+.atributo-values input.attr-low {
+    background: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+}
+
+.atributo-values input.attr-normal {
+    background: #d1ecf1;
+    border-color: #17a2b8;
+    color: #0c5460;
+}
+
+.atributo-values input.attr-high {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+/* Painel de estatísticas dos atributos */
+.atributos-stats {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+.stats-header h4 {
+    margin: 0 0 1rem 0;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.9;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.stat-value.critical {
+    color: #ff6b6b;
+}
+
+.stat-value.low {
+    color: #ffd93d;
+}
+
+.stat-value.normal {
+    color: #74c0fc;
+}
+
+.stat-value.high {
+    color: #51cf66;
+}
+
+/* Barra de saúde */
+.health-bar {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.health-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: all 0.5s ease;
+    position: relative;
+}
+
+.health-fill.critical {
+    background: linear-gradient(90deg, #ff6b6b, #ee5a52);
+}
+
+.health-fill.low {
+    background: linear-gradient(90deg, #ffd93d, #fcc419);
+}
+
+.health-fill.normal {
+    background: linear-gradient(90deg, #74c0fc, #339af0);
+}
+
+.health-fill.high {
+    background: linear-gradient(90deg, #51cf66, #37b24d);
 }
 
 .ficha-actions {
@@ -295,7 +408,7 @@ body {
     border: 1px solid #dee2e6;
 }
 
-/* ===== GERENCIAMENTO DE SALAS ===== */
+/* ===== GERENCIAME/* ===== SALAS ===== */
 .salas-container {
     display: flex;
     flex-direction: column;
@@ -329,10 +442,35 @@ body {
     width: 150px;
 }
 
+/* Estatísticas das salas */
+.salas-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+.stats-item {
+    text-align: center;
+}
+
+.stats-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.stats-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
 .salas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 0.5rem;
     max-height: 600px;
     overflow-y: auto;
     padding: 1rem;
@@ -340,20 +478,28 @@ body {
     border-radius: 12px;
 }
 
+.salas-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
 .sala-card {
     background: white;
     border: 2px solid #dee2e6;
-    border-radius: 8px;
-    padding: 0.75rem;
-    text-align: center;
+    border-radius: 12px;
+    padding: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 .sala-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .sala-card.visitada {
@@ -364,13 +510,33 @@ body {
 .sala-card.atual {
     background: #fff3cd;
     border-color: #ffc107;
-    box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.6);
+}
+
+.sala-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .sala-numero {
     font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    color: #495057;
+}
+
+.sala-status {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.status-visitada {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status-atual {
+    color: #ffc107;
 }
 
 .sala-badges {
@@ -378,27 +544,91 @@ body {
     flex-wrap: wrap;
     gap: 0.25rem;
     justify-content: center;
-    margin-bottom: 0.5rem;
+    min-height: 24px;
 }
 
 .badge {
-    font-size: 0.8rem;
-    padding: 0.1rem 0.3rem;
-    border-radius: 3px;
+    font-size: 1rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
     cursor: pointer;
+    transition: all 0.2s ease;
+    background: #e9ecef;
+    border: 1px solid #ced4da;
+}
+
+.badge:hover {
+    transform: scale(1.1);
+}
+
+.badge-inactive {
+    opacity: 0.4;
+    filter: grayscale(100%);
+}
+
+.badge-inactive:hover {
+    opacity: 0.8;
+    filter: grayscale(0%);
+}
+
+.sala-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+}
+
+.btn-mini {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.btn-mini:hover {
+    background: #f8f9fa;
+    transform: translateY(-1px);
 }
 
 .sala-anotacao {
     width: 100%;
-    margin-top: 0.5rem;
-    padding: 0.25rem;
+    padding: 0.5rem;
     border: 1px solid #dee2e6;
-    border-radius: 3px;
+    border-radius: 6px;
     font-size: 0.8rem;
-    resize: none;
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
 }
 
-/* ===== SISTEMA DE ENCANTOS ===== */
+.sala-anotacao:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.sala-conexoes {
+    background: #f8f9fa;
+    padding: 0.5rem;
+    border-radius: 4px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.sala-conexoes small {
+    color: #6c757d;
+    font-size: 0.75rem;
+}
+
+.empty-state {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 2rem;
+}/* ===== SISTEMA DE ENCANTOS ===== */
 .encantos-container {
     display: flex;
     flex-direction: column;
@@ -465,9 +695,55 @@ body {
     opacity: 0.7;
 }
 
+.encanto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.encanto-status {
+    font-size: 1.2rem;
+}
+
+.encanto-contador {
+    background: #007bff;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
 .encanto-nome {
     font-weight: bold;
     font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.encanto-descricao {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+}
+
+.encanto-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.btn-remove {
+    background: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn-remove:hover {
+    background: #c82333;
+}
     margin-bottom: 0.5rem;
     color: #495057;
 }
@@ -797,5 +1073,127 @@ body {
     .run-info {
         grid-template-columns: 1fr;
     }
+}
+
+
+/* ===== MODIFICADORES DE ATRIBUTOS ===== */
+.modificadores-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.modificadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.modificador-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #667eea;
+}
+
+.modificador-card h4 {
+    margin: 0 0 0.75rem 0;
+    color: #495057;
+    font-size: 1rem;
+}
+
+.modificador-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-modificador {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    min-width: 40px;
+}
+
+.btn-modificador.btn-minus {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.btn-modificador.btn-minus:hover {
+    background: #f1b0b7;
+    transform: translateY(-1px);
+}
+
+.btn-modificador.btn-plus {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.btn-modificador.btn-plus:hover {
+    background: #b8dabd;
+    transform: translateY(-1px);
+}
+
+.modificador-custom {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.modificador-custom:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.modificadores-presets {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modificadores-presets h4 {
+    margin: 0 0 1rem 0;
+    color: #495057;
+    font-size: 1.1rem;
+}
+
+.presets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+.btn-preset {
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.btn-preset:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-preset:active {
+    transform: translateY(0);
 }
 

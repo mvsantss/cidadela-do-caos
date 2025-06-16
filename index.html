@@ -63,6 +63,70 @@
                         </div>
                     </div>
 
+                    <!-- Seção de Modificadores de Atributos -->
+                    <div class="ficha-section">
+                        <h2>⚡ Modificadores de Atributos</h2>
+                        <div class="modificadores-container">
+                            <div class="modificadores-grid">
+                                <div class="modificador-card">
+                                    <h4>Habilidade</h4>
+                                    <div class="modificador-controls">
+                                        <button class="btn-modificador btn-minus" onclick="window.cidadelaApp.modules.ficha.aplicarModificador('habilidade', -1)">-1</button>
+                                        <button class="btn-modificador btn-plus" onclick="window.cidadelaApp.modules.ficha.aplicarModificador('habilidade', 1)">+1</button>
+                                        <input type="number" class="modificador-custom" placeholder="Valor" onchange="window.cidadelaApp.modules.ficha.aplicarModificadorCustom('habilidade', this.value); this.value='';">
+                                    </div>
+                                </div>
+                                <div class="modificador-card">
+                                    <h4>Energia</h4>
+                                    <div class="modificador-controls">
+                                        <button class="btn-modificador btn-minus" onclick="window.cidadelaApp.modules.ficha.aplicarModificador('energia', -2)">-2</button>
+                                        <button class="btn-modificador btn-plus" onclick="window.cidadelaApp.modules.ficha.aplicarModificador('energia', 2)">+2</button>
+                                        <input type="number" class="modificador-custom" placeholder="Valor" onchange="window.cidadelaApp.modules.ficha.aplicarModificadorCustom('energia', this.value); this.value='';">
+                                    </div>
+                                </div>
+                                <div class="modificador-card">
+                                    <h4>Sorte</h4>
+                                    <div class="modificador-controls">
+                                        <button class="btn-modificador btn-minus" onclick="window.cidadelaApp.modules.ficha.aplicarModificador('sorte', -1)">-1</button>
+                                        <button class="btn-modificador btn-plus" onclick="window.cidadelaApp.modules.ficha.aplicarModificador('sorte', 1)">+1</button>
+                                        <input type="number" class="modificador-custom" placeholder="Valor" onchange="window.cidadelaApp.modules.ficha.aplicarModificadorCustom('sorte', this.value); this.value='';">
+                                    </div>
+                                </div>
+                                <div class="modificador-card">
+                                    <h4>Magia</h4>
+                                    <div class="modificador-controls">
+                                        <button class="btn-modificador btn-minus" onclick="window.cidadelaApp.modules.ficha.aplicarModificador('magia', -1)">-1</button>
+                                        <button class="btn-modificador btn-plus" onclick="window.cidadelaApp.modules.ficha.aplicarModificador('magia', 1)">+1</button>
+                                        <input type="number" class="modificador-custom" placeholder="Valor" onchange="window.cidadelaApp.modules.ficha.aplicarModificadorCustom('magia', this.value); this.value='';">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modificadores-presets">
+                                <h4>🎯 Modificadores Rápidos</h4>
+                                <div class="presets-grid">
+                                    <button class="btn-preset" onclick="window.cidadelaApp.modules.ficha.aplicarPreset('combate-perdido')">
+                                        ⚔️ Perdeu Combate (-2 Energia)
+                                    </button>
+                                    <button class="btn-preset" onclick="window.cidadelaApp.modules.ficha.aplicarPreset('usar-sorte')">
+                                        🍀 Usar Sorte (-1 Sorte)
+                                    </button>
+                                    <button class="btn-preset" onclick="window.cidadelaApp.modules.ficha.aplicarPreset('pocao-cura')">
+                                        🧪 Poção de Cura (+4 Energia)
+                                    </button>
+                                    <button class="btn-preset" onclick="window.cidadelaApp.modules.ficha.aplicarPreset('armadilha')">
+                                        ⚠️ Armadilha (-1 Habilidade, -2 Energia)
+                                    </button>
+                                    <button class="btn-preset" onclick="window.cidadelaApp.modules.ficha.aplicarPreset('benção')">
+                                        ✨ Bênção (+1 todos atributos)
+                                    </button>
+                                    <button class="btn-preset" onclick="window.cidadelaApp.modules.ficha.aplicarPreset('maldição')">
+                                        💀 Maldição (-1 todos atributos)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="ficha-section">
                         <h2>Inventário</h2>
                         <div class="inventario-grid">

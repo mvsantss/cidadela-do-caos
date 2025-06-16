@@ -89,14 +89,39 @@ export class SalasModule {
 
         const salasParaMostrar = this.getSalasFiltradas();
 
+        // Criar estatísticas no topo
+        const statsDiv = document.createElement('div');
+        statsDiv.className = 'salas-stats';
+        statsDiv.innerHTML = `
+            <div class="stats-item">
+                <span class="stats-number">${this.getTotalSalasVisitadas()}</span>
+                <span class="stats-label">Visitadas</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-number">${400 - this.getTotalSalasVisitadas()}</span>
+                <span class="stats-label">Restantes</span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-number">${this.gameState.salaAtual || 1}</span>
+                <span class="stats-label">Atual</span>
+            </div>
+        `;
+        container.appendChild(statsDiv);
+
+        // Criar grid de salas
+        const gridDiv = document.createElement('div');
+        gridDiv.className = 'salas-grid-container';
+
         salasParaMostrar.forEach(sala => {
             const salaCard = this.createSalaCard(sala);
-            container.appendChild(salaCard);
+            gridDiv.appendChild(salaCard);
         });
+
+        container.appendChild(gridDiv);
 
         // Se não há salas para mostrar
         if (salasParaMostrar.length === 0) {
-            container.innerHTML = '<p class="empty-state">Nenhuma sala encontrada</p>';
+            gridDiv.innerHTML = '<p class="empty-state">Nenhuma sala encontrada</p>';
         }
     }
 
@@ -121,15 +146,35 @@ export class SalasModule {
         if (sala.numero === this.gameState.salaAtual) card.classList.add('atual');
 
         card.innerHTML = `
-            <div class="sala-numero">${sala.numero}</div>
+            <div class="sala-header">
+                <div class="sala-numero">${sala.numero}</div>
+                <div class="sala-status">
+                    ${sala.visitada ? '<span class="status-visitada">✓</span>' : ''}
+                    ${sala.numero === this.gameState.salaAtual ? '<span class="status-atual">📍</span>' : ''}
+                </div>
+            </div>
             <div class="sala-badges">
                 ${this.renderBadges(sala)}
             </div>
+            <div class="sala-actions">
+                <button class="btn-mini" onclick="event.stopPropagation(); window.cidadelaApp.modules.salas.setSalaAtual(${sala.numero})" title="Ir para esta sala">
+                    📍 Ir
+                </button>
+                <button class="btn-mini" onclick="event.stopPropagation(); window.cidadelaApp.modules.salas.toggleSalaVisitada(${sala.numero})" title="Marcar como visitada">
+                    ${sala.visitada ? '❌ Desmarcar' : '✅ Visitada'}
+                </button>
+            </div>
             <textarea 
                 class="sala-anotacao" 
-                placeholder="Anotações..."
+                placeholder="Anotações da sala..."
                 data-sala="${sala.numero}"
+                onclick="event.stopPropagation()"
             >${sala.anotacao}</textarea>
+            ${sala.proximasSalas && sala.proximasSalas.length > 0 ? `
+                <div class="sala-conexoes">
+                    <small>Conecta com: ${sala.proximasSalas.join(', ')}</small>
+                </div>
+            ` : ''}
         `;
 
         // Event listeners para a sala
